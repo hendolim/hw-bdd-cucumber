@@ -25,16 +25,14 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
   # HINT: use String#split to split up the rating_list, then
   #   iterate over the ratings and reuse the "When I check..." or
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
-  rating_list.split(',').each { |rating|
-    if uncheck
-      uncheck "ratings_#{rating}"
-    else
-      check "ratings_#{rating}"
-    end
-  }
+  if uncheck
+    rating_list.split(", ").each { |rating| uncheck("ratings_#{rating}")}
+  else
+    rating_list.split(", ").each { |rating| check("ratings_#{rating}")}
+  end
 end
 
 Then /I should see all the movies/ do
   # Make sure that all the movies in the app are visible in the table
-  expect(page).to have_css("table#movie tr", :count=>Movie.count("title"))
+  expect(page.body).to have_css("table#movies tr", :count=>Movie.count("title")+1)
 end
